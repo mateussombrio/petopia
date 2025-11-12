@@ -1,7 +1,7 @@
+import 'dotenv/config'
 import express from "express";
 import { database } from "./database.js";
 import animalRouter from "./routes/AnimalRouter.js";
-import 'dotenv/config'
 
 const app = express();
 
