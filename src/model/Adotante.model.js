@@ -12,7 +12,15 @@ const Adotante = database.define("Adotante", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  senha: {
+    type: DataTypes.STRING(128),
+    allowNull: false,
+  },
   contato: {
     type: DataTypes.STRING,
     allowNull: false,
