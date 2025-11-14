@@ -34,6 +34,7 @@ export const criarAdotante = async (req, res) => {
       return res.status(404).send("Preencha todos os campos.");
     }
     const adotante = await Adotante.create({ nome, contato, email, endereco, senha });
+
     return res.status(201).send("Usuário criado com sucesso.");
   } catch (err) {
     console.error(err);
@@ -47,6 +48,7 @@ export const criarAdotante = async (req, res) => {
 export const atualizarAdotante = async (req, res) => {
   try {
     const idUsuarioLogado = req.userId
+
     const { nome, contato, endereco } = req.body;
     if (!nome || !contato || !endereco) {
       return res.status(404).send("Preencha todos os campos.");
@@ -54,6 +56,7 @@ export const atualizarAdotante = async (req, res) => {
     const adotante = await Adotante.update(
       { nome, contato, endereco },
       { where: {id: idUsuarioLogado} }
+
     );
     return res.status(200).send("Usuário atualizado com sucesso.");
   } catch (err) {
@@ -74,3 +77,4 @@ export const excluirAdotante = async (req, res) => {
     console.error(err);
   }
 };
+

@@ -30,6 +30,7 @@ const Adotante = database.define(
       allowNull: false,
     },
 
+
     endereco: {
       type: DataTypes.STRING,
       allowNull: false,

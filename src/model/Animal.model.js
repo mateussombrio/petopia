@@ -2,6 +2,7 @@ import { DataTypes } from "sequelize";
 import { database } from "../../database.js";
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const Animal = database.define(
   "Animal",
   {
@@ -42,6 +43,8 @@ const Animal = database.define(
   }
 );
 =======
+=======
+>>>>>>> 8732fdf71fc4e159e4075f3343c7da4d58101b30
 const Animal = database.define("Animal", {
   id: {
     type: DataTypes.INTEGER,
@@ -74,6 +77,9 @@ const Animal = database.define("Animal", {
     allowNull: false,
   },
 });
+<<<<<<< HEAD
+>>>>>>> 8732fdf71fc4e159e4075f3343c7da4d58101b30
+=======
 >>>>>>> 8732fdf71fc4e159e4075f3343c7da4d58101b30
 
 export default Animal;
