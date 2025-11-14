@@ -1,7 +1,9 @@
 import 'dotenv/config'
 import express from "express";
+import jwt from "jsonwebtoken";
 import { database } from "./database.js";
 import animalRouter from "./routes/AnimalRouter.js";
+
 
 const app = express();
 
@@ -10,7 +12,7 @@ app.use(express.urlencoded({extended:true}));
 app.use("/animal", animalRouter)
 
 try{
-    database.sync()
+    database.sync({alter:true})
     console.log("Conexão bem-sucedida.")
 }catch(err){
     console.log("Erro: ", err)
