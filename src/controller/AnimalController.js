@@ -64,7 +64,10 @@ export const atualizarAnimal = async (req, res) => {
     if (!nome || !especie || !raca || !idade || !status_saude) {
       return res.status(404).send("Preencha todos os campos.");
     }
-    const animal = await Animal.update({ nome, especie, raca, idade, status_saude }, { where: {id} });
+    const animal = await Animal.update(
+      { nome, especie, raca, idade, status_saude },
+      { where: { id } }
+    );
     return res.status(200).send("Informações atualizadas com sucesso.");
   } catch (err) {
     console.error(err);
@@ -79,7 +82,7 @@ export const atualizarAnimal = async (req, res) => {
 export const excluirAnimal = async (req, res) => {
   try {
     const { id } = req.params;
-    const animal = await Animal.destroy({ where: {id} });
+    const animal = await Animal.destroy({ where: { id } });
     return res.status(204).send("Animal deletado com sucesso.");
   } catch {
     console.error(err);

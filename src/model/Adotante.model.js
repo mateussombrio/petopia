@@ -15,6 +15,7 @@ const Adotante = database.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+
     email: {
       type: DataTypes.STRING,
       unique: true,
@@ -25,11 +26,11 @@ const Adotante = database.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+
     contato: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-
 
     endereco: {
       type: DataTypes.STRING,

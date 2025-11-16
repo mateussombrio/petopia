@@ -1,3 +1,5 @@
+// Função par autenticar usuário. Se o token é válido ou não.
+
 import jwt from "jsonwebtoken";
 import authConfig from "../config/authConfig";
 
