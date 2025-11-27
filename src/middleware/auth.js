@@ -10,10 +10,13 @@ export default (req, res, next) => {
     return res.status(401).json({ error: "Token não fornecido." });
   }
 
+  const [, token] = authHeader.split(' ')
+
   try {
-    const verificacao = jwt.verify(authHeader, authConfig.secret);
+    const verificacao = jwt.verify(token, authConfig.secret);
     // Usado para garantir que é o próprio usuário
-    req.userId;
+    req.userId = verificacao.id
+    
     return next();
   } catch (err) {
     return res.status(500).json({ error: "Token inválido ou expirado." });

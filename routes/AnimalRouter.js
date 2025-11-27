@@ -1,11 +1,16 @@
 import { Router } from "express";
 import { mostrarAnimais, mostrarAnimalID, cadastrarAnimal, atualizarAnimal, excluirAnimal } from "../src/controller/AnimalController.js";
 import authFunction from "../src/middleware/auth.js"
+import { realizarLogin } from "../src/controller/LoginController.js";
 
 const router = Router()
 
+
 router.get("/", mostrarAnimais)
 router.get("/:id", mostrarAnimalID)
+
+router.use(authFunction)
+
 router.post("/", cadastrarAnimal)
 router.put("/:id", atualizarAnimal)  //router.put("/:id", authFunction, atualizarAnimal)
 router.delete("/:id", excluirAnimal)
