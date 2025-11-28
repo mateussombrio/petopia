@@ -15,9 +15,11 @@ export const realizarLogin = async (req, res) => {
     if (!user) {
       return res.status(401).send("Credenciais inválidas.");
     }
-
+    console.log("Tamanho da senha no banco:", user.senha.length); 
+    console.log("Hash salvo:", user.senha);
     // Comparar a senha
     const senhaValida = await bcrypt.compare(senha, user.senha);
+    console.log(senhaValida)
 
     // Verificar validade da senha
     if (!senhaValida) {
@@ -29,6 +31,7 @@ export const realizarLogin = async (req, res) => {
       id: user.id,
       email: user.email,
       nome: user.nome,
+      permissao: 'usuario'
     };
 
     // Gerar o token

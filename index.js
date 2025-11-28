@@ -20,7 +20,7 @@ app.use("/animal", animalRouter);
 app.use("/adotante", adotanteRouter);
 
 try {
-  database.sync({ alter: true });
+  database.sync();
   console.log("Conexão bem-sucedida.");
 } catch (err) {
   console.log("Erro: ", err);

@@ -16,6 +16,7 @@ export default (req, res, next) => {
     const verificacao = jwt.verify(token, authConfig.secret);
     // Usado para garantir que é o próprio usuário
     req.userId = verificacao.id
+    req.permissaoUsuario = verificacao.permissao
     
     return next();
   } catch (err) {
