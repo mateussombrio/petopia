@@ -1,13 +1,24 @@
 import { Router } from "express";
-import { mostrarAnimais, mostrarAnimalID, cadastrarAnimal, atualizarAnimal, excluirAnimal } from "../src/controller/AnimalController.js";
-import authFunction from "../src/middleware/auth.js"
+import {
+  mostrarAnimais,
+  mostrarAnimalID,
+  cadastrarAnimal,
+  atualizarAnimal,
+  excluirAnimal,
+} from "../src/controller/AnimalController.js";
+import authFunction from "../src/middleware/auth.js";
+import { realizarLogin } from "../src/controller/LoginController.js";
+import { checkRole } from "../src/middleware/verificarPermissao.js";
 
-const router = Router()
+const router = Router();
 
-router.get("/", mostrarAnimais)
-router.get("/:id", mostrarAnimalID)
-router.post("/", authFunction, cadastrarAnimal)
-router.put("/:id", authFunction, atualizarAnimal)
-router.delete("/:id", excluirAnimal)
+router.get("/", mostrarAnimais);
+router.get("/:id", mostrarAnimalID);
 
-export default router
+router.use(authFunction);
+
+router.post("/", checkRole(["Administrador"]), cadastrarAnimal);
+router.put("/:id", checkRole(["Administrador"]), atualizarAnimal);
+router.delete("/:id", checkRole(["Administrador"]), excluirAnimal);
+
+export default router;

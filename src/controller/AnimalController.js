@@ -1,4 +1,4 @@
-import Animal from "../model/Animal.model.js";
+import { Animal } from "../model/Animal.model.js";
 
 // Pegar todos os Animais
 export const mostrarAnimais = async (_, res) => {
@@ -32,16 +32,17 @@ export const mostrarAnimalID = async (req, res) => {
 // Cadastrar animal
 export const cadastrarAnimal = async (req, res) => {
   try {
-    const { nome, especie, raca, idade, status_saude } = req.body;
-    if (!nome || !especie || !raca || !idade || !status_saude) {
+    const { nome, raca, idade, status_saude, genero, foto } = req.body;
+    if (!nome || !raca || !idade || !genero || !status_saude) {
       return res.status(404).send("Preencha todos os campos.");
     }
     const animal = await Animal.create({
       nome,
-      especie,
       raca,
       idade,
+      genero,
       status_saude,
+      foto
     });
     return res.status(201).json({
       mensagem: "Animal cadastrado com sucesso",
@@ -60,12 +61,12 @@ export const cadastrarAnimal = async (req, res) => {
 export const atualizarAnimal = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nome, especie, raca, idade, status_saude } = req.body;
-    if (!nome || !especie || !raca || !idade || !status_saude) {
+    const { nome, raca, idade, genero, status_saude, adotado, foto } = req.body;
+    if (!nome || !raca || !idade || !status_saude) {
       return res.status(404).send("Preencha todos os campos.");
     }
     const animal = await Animal.update(
-      { nome, especie, raca, idade, status_saude },
+      { nome, raca, idade, genero, status_saude, adotado, foto },
       { where: { id } }
     );
     return res.status(200).send("Informações atualizadas com sucesso.");

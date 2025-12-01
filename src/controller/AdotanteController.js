@@ -1,4 +1,5 @@
 import Adotante from "../model/Adotante.model.js";
+import bcrypt from "bcrypt"
 
 export const mostrarAdotantes = async (_, res) => {
   try {
@@ -29,16 +30,20 @@ export const mostrarAdotanteID = async (req, res) => {
 
 export const criarAdotante = async (req, res) => {
   try {
-    const { nome, contato, endereco, senha } = req.body;
-    if (!nome || !contato || !endereco) {
+    const { nome, contato, endereco, email, senha } = req.body;
+    if (!nome || !contato || !endereco || !email || !senha) {
       return res.status(404).send("Preencha todos os campos.");
     }
+
+    const salt = await bcrypt.genSalt(12)
+    const hash = await bcrypt.hash(senha, salt)
+
     const adotante = await Adotante.create({
       nome,
       contato,
       email,
       endereco,
-      senha,
+      senha: hash,
     });
 
     return res.status(201).send("Usuário criado com sucesso.");

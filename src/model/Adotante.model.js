@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { database } from "../../database";
+import { database } from "../../database.js";
 import bcrypt from "bcrypt";
 
 const Adotante = database.define(
@@ -39,14 +39,9 @@ const Adotante = database.define(
   },
   {
     hooks: {
-      // Hasheando a senha
-      beforeCreate: async (adotante) => {
-        const hashSenha = await bcrypt.hash(adotante.senha, 10);
-        adotante.senha = hashSenha;
-      },
       beforeUpdate: async (adotante) => {
         if (adotante.changed("senha")) {
-          const hashSenha = await bcrypt.hash(adotante.senha, 10);
+          const hashSenha = await bcrypt.hash(adotante.senha, 12);
           adotante.senha = hashSenha;
         }
       },

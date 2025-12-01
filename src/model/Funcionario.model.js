@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import bcrypt from "bcrypt";
-import { database } from "../../database";
+import { database } from "../../database.js";
 
 export const Funcionario = database.define(
   "Funcionário",

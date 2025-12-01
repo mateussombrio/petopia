@@ -1,7 +1,6 @@
 import { DataTypes } from "sequelize";
 import { database } from "../../database.js";
 
-
 export const Animal = database.define(
   "Animal",
   {
@@ -16,11 +15,6 @@ export const Animal = database.define(
       allowNull: false,
     },
 
-    especie: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-
     raca: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -31,9 +25,24 @@ export const Animal = database.define(
       allowNull: false,
     },
 
+    genero: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+
     status_saude: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+
+    foto: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    adotado: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {
