@@ -32,11 +32,6 @@ export const Funcionario = database.define(
   },
   {
     hooks: {
-      // Hasheando a senha
-      beforeCreate: async (funcionario) => {
-        const hashSenha = await bcrypt.hash(funcionario.senha, 10);
-        adotante.senha = hashSenha;
-      },
       beforeUpdate: async (funcionario) => {
         if (adotante.changed("senha")) {
           const hashSenha = await bcrypt.hash(funcionario.senha, 10);
