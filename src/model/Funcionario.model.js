@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import bcrypt from "bcrypt";
-import { database } from "../../database.js";
+import { database } from "../../database.js"; // Verifique se este caminho está correto para sua estrutura
 
 export const Funcionario = database.define(
   "Funcionário",
@@ -32,10 +32,18 @@ export const Funcionario = database.define(
   },
   {
     hooks: {
-      beforeUpdate: async (funcionario) => {
-        if (adotante.changed("senha")) {
+      // HOOK ADICIONADO: Criptografa a senha ao CRIAR o funcionário
+      beforeCreate: async (funcionario) => {
+        if (funcionario.senha) {
           const hashSenha = await bcrypt.hash(funcionario.senha, 10);
-          adotante.senha = hashSenha;
+          funcionario.senha = hashSenha;
+        }
+      },
+      // HOOK CORRIGIDO: Agora usa a variável 'funcionario' corretamente
+      beforeUpdate: async (funcionario) => {
+        if (funcionario.changed("senha")) {
+          const hashSenha = await bcrypt.hash(funcionario.senha, 10);
+          funcionario.senha = hashSenha; // Corrigido de 'adotante' para 'funcionario'
         }
       },
     },
