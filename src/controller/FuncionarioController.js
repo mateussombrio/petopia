@@ -1,4 +1,4 @@
-import {Funcionario} from "../model/Funcionario.model.js";
+import { Funcionario } from "../model/Funcionario.model.js";
 import bcrypt from "bcrypt";
 
 export const mostrarFuncionario = async (_, res) => {
@@ -33,7 +33,7 @@ export const criarFuncionario = async (req, res) => {
     const { nome, email, senha } = req.body;
     const dominio = "@petopia.com.br";
     if (!email.includes(dominio)) {
-      return res.status(404).send("Domínio inválido.");s
+      return res.status(404).send("Domínio inválido.");
     }
 
     if (!nome || !email || !senha) {
@@ -59,7 +59,7 @@ export const criarFuncionario = async (req, res) => {
   }
 };
 
-export const atualizarFuncionario= async (req, res) => {
+export const atualizarFuncionario = async (req, res) => {
   try {
     const idUsuarioLogado = req.userId;
 
@@ -84,7 +84,9 @@ export const atualizarFuncionario= async (req, res) => {
 export const excluirFuncionario = async (req, res) => {
   try {
     const idUsuarioLogado = req.userId;
-    const funcionario = await Funcionario.destroy({ where: { id: idUsuarioLogado } });
+    const funcionario = await Funcionario.destroy({
+      where: { id: idUsuarioLogado },
+    });
     return res.status(204).send("Usuário excluído com sucesso.");
   } catch (err) {
     console.error(err);
