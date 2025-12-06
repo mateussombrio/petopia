@@ -49,7 +49,7 @@ export const criarFuncionario = async (req, res) => {
       senha: hash,
     });
 
-    return res.status(201).send("Usuário criado com sucesso.");
+    return res.status(201).send("Funcionário criado com sucesso.");
   } catch (err) {
     console.error(err);
     return res.status(500).json({

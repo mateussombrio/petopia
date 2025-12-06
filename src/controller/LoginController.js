@@ -33,6 +33,7 @@ export const realizarLogin = async (req, res) => {
       id: user.id,
       email: user.email,
       nome: user.nome,
+      permissao: user.nivel_permissao
     };
 
     // Gerar o token

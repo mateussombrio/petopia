@@ -36,6 +36,10 @@ const Adotante = database.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    nivel_permissao: {
+      type: DataTypes.STRING,
+      defaultValue: "Usuário"
+    }
   },
   {
     hooks: {
