@@ -12,30 +12,15 @@ export const realizarLogin = async (req, res) => {
   }
 
   try {
-    let user = null;
-    let tipoUsuario = null; // Para controlar se é adotante ou funcionário
-
     // 1. Tenta buscar na tabela de Adotantes
-    user = await Adotante.findOne({ where: { email: email } });
-    
-    if (user) {
-      tipoUsuario = 'adotante';
-    } else {
-      // 2. Se não achou, tenta buscar na tabela de Funcionários
-      user = await Funcionario.findOne({ where: { email: email } });
-      if (user) {
-        tipoUsuario = 'funcionario';
-      }
-    }
+    const user = await Adotante.findOne({ where: { email: email } });
+
+    if (!user) {const user = await Funcionario.findOne({ where: { email: email } });}
 
     // Se não encontrou em nenhuma das duas tabelas
     if (!user) {
       return res.status(401).send("Credenciais inválidas.");
     }
-
-    // Logs para debug (pode remover em produção)
-    console.log(`Login tentando como: ${tipoUsuario}`);
-    
     // Comparar a senha
     const senhaValida = await bcrypt.compare(senha, user.senha);
 
@@ -43,19 +28,11 @@ export const realizarLogin = async (req, res) => {
     if (!senhaValida) {
       return res.status(401).send("Credenciais inválidas.");
     }
-
-    // 3. Define a permissão baseado no tipo de usuário
-    // Se for Funcionário, pega do banco. Se for Adotante, define como 'usuario'
-    const permissaoToken = tipoUsuario === 'funcionario' 
-      ? user.nivel_permissao 
-      : 'usuario';
-
     // Define o payload
     const payload = {
       id: user.id,
       email: user.email,
       nome: user.nome,
-      permissao: permissaoToken
     };
 
     // Gerar o token
@@ -69,8 +46,6 @@ export const realizarLogin = async (req, res) => {
         id: user.id,
         nome: user.nome,
         email: user.email,
-        tipo: tipoUsuario, // Útil para o frontend saber quem logou
-        permissao: permissaoToken
       },
       token: token,
     });

@@ -8,7 +8,7 @@ export const mostrarFuncionario = async (_, res) => {
   } catch (err) {
     console.error(err);
     return res.status(500).json({
-      message: "Erro ao informar adotantes.",
+      message: "Erro ao informar funcionários.",
       error: err.message,
     });
   }
@@ -22,7 +22,7 @@ export const mostrarFuncionarioID = async (req, res) => {
   } catch (err) {
     console.error(err);
     return res.status(500).json({
-      message: "Erro ao informar adotante.",
+      message: "Erro ao informar funcionários.",
       error: err.message,
     });
   }
@@ -33,7 +33,7 @@ export const criarFuncionario = async (req, res) => {
     const { nome, email, senha } = req.body;
     const dominio = "@petopia.com.br";
     if (!email.includes(dominio)) {
-      return res.status(404).send("Domínio inválido.");
+      return res.status(404).send("Domínio inválido.");s
     }
 
     if (!nome || !email || !senha) {
@@ -43,7 +43,7 @@ export const criarFuncionario = async (req, res) => {
     const salt = await bcrypt.genSalt(12);
     const hash = await bcrypt.hash(senha, salt);
 
-    const adotante = await Funcionario.create({
+    const funcionario = await Funcionario.create({
       nome,
       email,
       senha: hash,
