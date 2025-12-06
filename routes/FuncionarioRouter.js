@@ -14,10 +14,10 @@ const router = Router();
 
 router.use(authFunction);
 
-router.get("/", checkRole("Administrador"), mostrarFuncionario);
-router.get("/:id", checkRole("Administrador"), mostrarFuncionarioID);
+router.get("/", checkRole(["Administrador"]), mostrarFuncionario);
+router.get("/:id", checkRole(["Administrador"]), mostrarFuncionarioID);
 router.post("/", criarFuncionario);
-router.put("/:id", checkRole("Administrador"), atualizarFuncionario);
-router.delete("/:id", checkRole("Administrador"), excluirFuncionario);
+router.put("/:id", checkRole(["Administrador"]), atualizarFuncionario);
+router.delete("/:id", checkRole(["Administrador"]), excluirFuncionario);
 
 export default router
