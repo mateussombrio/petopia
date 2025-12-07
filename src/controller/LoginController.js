@@ -12,31 +12,37 @@ export const realizarLogin = async (req, res) => {
   }
 
   try {
-    // 1. Tenta buscar na tabela de Adotantes
-    const user = await Adotante.findOne({ where: { email: email } });
+    // CORREÇÃO 1: Usamos 'let' para poder alterar a variável
+    let user = await Adotante.findOne({ where: { email: email } });
+    let tipoUsuario = 'adotante'; // Para saber quem é depois
 
-    if (!user) {const user = await Funcionario.findOne({ where: { email: email } });}
-
-    // Se não encontrou em nenhuma das duas tabelas
+    // Se não achou em Adotante, procura em Funcionario
     if (!user) {
-      return res.status(401).send("Credenciais inválidas.");
+      user = await Funcionario.findOne({ where: { email: email } }); // Sem 'const' aqui!
+      tipoUsuario = 'funcionario';
     }
+
+    // Se não encontrou em NENHUMA das duas
+    if (!user) {
+      return res.status(401).send("Credenciais inválidas (Usuário não encontrado).");
+    }
+
     // Comparar a senha
     const senhaValida = await bcrypt.compare(senha, user.senha);
 
-    // Verificar validade da senha
     if (!senhaValida) {
-      return res.status(401).send("Credenciais inválidas.");
+      return res.status(401).send("Credenciais inválidas (Senha incorreta).");
     }
-    // Define o payload
+
+    // CORREÇÃO 2: Payload seguro para Adotantes (que não têm nivel_permissao)
     const payload = {
       id: user.id,
       email: user.email,
       nome: user.nome,
-      permissao: user.nivel_permissao
+      // Se for funcionário pega do banco, se for adotante define como 'Comum'
+      permissao: user.nivel_permissao || 'Comum' 
     };
 
-    // Gerar o token
     const token = jwt.sign(payload, authConfig.secret, {
       expiresIn: authConfig.expiresIn,
     });
@@ -47,6 +53,7 @@ export const realizarLogin = async (req, res) => {
         id: user.id,
         nome: user.nome,
         email: user.email,
+        permissao: payload.permissao // Retorna a permissão para o frontend saber
       },
       token: token,
     });

@@ -33,7 +33,7 @@ export const criarFuncionario = async (req, res) => {
     const { nome, email, senha } = req.body;
     const dominio = "@petopia.com.br";
     if (!email.includes(dominio)) {
-      return res.status(404).send("Domínio inválido.");
+      return res.status(400).send("Domínio inválido.");
     }
 
     if (!nome || !email || !senha) {
