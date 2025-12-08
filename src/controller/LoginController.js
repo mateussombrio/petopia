@@ -14,7 +14,7 @@ export const realizarLogin = async (req, res) => {
   try {
     // Tenta encontrar como Funcionário primeiro
     let user = await Funcionario.findOne({ where: { email: email } });
-    let tipoUsuario = 'funcionario';
+    let tipoUsuario = 'Administrador';
 
     // Se achou funcionário, verifica a senha
     if (user) {
