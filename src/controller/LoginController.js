@@ -12,40 +12,60 @@ export const realizarLogin = async (req, res) => {
   }
 
   try {
-    // CORREÇÃO 1: Usamos 'let' para poder alterar a variável
-    let user = await Adotante.findOne({ where: { email: email } });
-    let tipoUsuario = 'adotante'; // Para saber quem é depois
+    // Tenta encontrar como Funcionário primeiro
+    let user = await Funcionario.findOne({ where: { email: email } });
+    let tipoUsuario = 'funcionario';
 
-    // Se não achou em Adotante, procura em Funcionario
-    if (!user) {
-      user = await Funcionario.findOne({ where: { email: email } }); // Sem 'const' aqui!
-      tipoUsuario = 'funcionario';
+    // Se achou funcionário, verifica a senha
+    if (user) {
+      const senhaValida = await bcrypt.compare(senha, user.senha);
+      if (senhaValida) {
+        // Se a senha bater, é login de funcionário
+        const payload = {
+          id: user.id,
+          email: user.email,
+          nome: user.nome,
+          permissao: user.nivel_permissao
+        };
+        const token = jwt.sign(payload, authConfig.secret, { expiresIn: authConfig.expiresIn });
+        return res.status(200).json({
+          message: "Login realizado com sucesso!",
+          user: {
+            id: user.id,
+            nome: user.nome,
+            email: user.email,
+            permissao: payload.permissao
+          },
+          token: token,
+        });
+      }
+      // Se a senha não bater, não retornamos erro ainda, pois pode ser um Adotante com mesmo email
     }
 
-    // Se não encontrou em NENHUMA das duas
+    // Se não logou como funcionário (não achou ou senha errada), tenta como Adotante
+    user = await Adotante.findOne({ where: { email: email } });
+    tipoUsuario = 'adotante';
+
     if (!user) {
       return res.status(401).send("Credenciais inválidas (Usuário não encontrado).");
     }
 
-    // Comparar a senha
+    // Comparar a senha de Adotante
     const senhaValida = await bcrypt.compare(senha, user.senha);
 
     if (!senhaValida) {
-      return res.status(401).send("Credenciais inválidas (Senha incorreta).");
+       return res.status(401).send("Credenciais inválidas (Senha incorreta).");
     }
 
-    // CORREÇÃO 2: Payload seguro para Adotantes (que não têm nivel_permissao)
+    // Payload para Adotante
     const payload = {
       id: user.id,
       email: user.email,
       nome: user.nome,
-      // Se for funcionário pega do banco, se for adotante define como 'Comum'
-      permissao: user.nivel_permissao || 'Comum' 
+      permissao: 'Comum'
     };
 
-    const token = jwt.sign(payload, authConfig.secret, {
-      expiresIn: authConfig.expiresIn,
-    });
+    const token = jwt.sign(payload, authConfig.secret, { expiresIn: authConfig.expiresIn });
 
     return res.status(200).json({
       message: "Login realizado com sucesso!",
@@ -53,7 +73,7 @@ export const realizarLogin = async (req, res) => {
         id: user.id,
         nome: user.nome,
         email: user.email,
-        permissao: payload.permissao // Retorna a permissão para o frontend saber
+        permissao: payload.permissao
       },
       token: token,
     });
