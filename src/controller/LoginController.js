@@ -12,71 +12,70 @@ export const realizarLogin = async (req, res) => {
   }
 
   try {
-    // Tenta encontrar como Funcionário primeiro
-    let user = await Funcionario.findOne({ where: { email: email } });
-    let tipoUsuario = 'Administrador';
-
-    // Se achou funcionário, verifica a senha
-    if (user) {
-      const senhaValida = await bcrypt.compare(senha, user.senha);
-      if (senhaValida) {
-        // Se a senha bater, é login de funcionário
-        const payload = {
-          id: user.id,
-          email: user.email,
-          nome: user.nome,
-          permissao: user.nivel_permissao
-        };
-        const token = jwt.sign(payload, authConfig.secret, { expiresIn: authConfig.expiresIn });
-        return res.status(200).json({
-          message: "Login realizado com sucesso!",
-          user: {
-            id: user.id,
-            nome: user.nome,
-            email: user.email,
-            permissao: payload.permissao
-          },
-          token: token,
-        });
-      }
-      // Se a senha não bater, não retornamos erro ainda, pois pode ser um Adotante com mesmo email
+    // 1. Tenta logar como Funcionário
+    const funcionario = await Funcionario.findOne({ where: { email: email } });
+    
+    if (funcionario) {
+        const senhaValida = await bcrypt.compare(senha, funcionario.senha);
+        if (senhaValida) {
+            const payload = {
+                id: funcionario.id,
+                email: funcionario.email,
+                nome: funcionario.nome,
+                permissao: funcionario.nivel_permissao
+            };
+            const token = jwt.sign(payload, authConfig.secret, { expiresIn: authConfig.expiresIn });
+            return res.status(200).json({
+                message: "Login realizado com sucesso!",
+                user: {
+                    id: funcionario.id,
+                    nome: funcionario.nome,
+                    email: funcionario.email,
+                    permissao: payload.permissao
+                },
+                token: token,
+            });
+        }
+        // Se funcionario existe mas senha errada, pode ser que queira tentar Adotante?
+        // Geralmente email unico no sistema é melhor, mas mantendo logica original de "tentar ambos"
+        // POREM, se existe funcionario com esse email, provavel que seja ele.
+        // Vamos tentar Adotante APENAS se não bater a senha, para caso haja duplicação de emails em tabelas diferentes
     }
 
-    // Se não logou como funcionário (não achou ou senha errada), tenta como Adotante
-    user = await Adotante.findOne({ where: { email: email } });
-    tipoUsuario = 'adotante';
+    // 2. Tenta logar como Adotante
+    const adotante = await Adotante.findOne({ where: { email: email } });
 
-    if (!user) {
-      return res.status(401).send("Credenciais inválidas (Usuário não encontrado).");
+    if (adotante) {
+        const senhaValida = await bcrypt.compare(senha, adotante.senha);
+        if (senhaValida) {
+             const payload = {
+                id: adotante.id,
+                email: adotante.email,
+                nome: adotante.nome,
+                permissao: 'Comum'
+             };
+             const token = jwt.sign(payload, authConfig.secret, { expiresIn: authConfig.expiresIn });
+             return res.status(200).json({
+                 message: "Login realizado com sucesso!",
+                 user: {
+                     id: adotante.id,
+                     nome: adotante.nome,
+                     email: adotante.email,
+                     permissao: payload.permissao
+                 },
+                 token: token,
+             });
+        }
     }
 
-    // Comparar a senha de Adotante
-    const senhaValida = await bcrypt.compare(senha, user.senha);
-
-    if (!senhaValida) {
-       return res.status(401).send("Credenciais inválidas (Senha incorreta).");
+    // Se chegou aqui, falhou
+    // Se encontrou algum usuario mas senha errada, ou se ninguem encontrado
+    if (funcionario || adotante) {
+        return res.status(401).send("Credenciais inválidas (Senha incorreta).");
+    } else {
+        return res.status(401).send("Credenciais inválidas (Usuário não encontrado).");
     }
 
-    // Payload para Adotante
-    const payload = {
-      id: user.id,
-      email: user.email,
-      nome: user.nome,
-      permissao: 'Comum'
-    };
-
-    const token = jwt.sign(payload, authConfig.secret, { expiresIn: authConfig.expiresIn });
-
-    return res.status(200).json({
-      message: "Login realizado com sucesso!",
-      user: {
-        id: user.id,
-        nome: user.nome,
-        email: user.email,
-        permissao: payload.permissao
-      },
-      token: token,
-    });
   } catch (err) {
     console.error("Erro durante o login: ", err);
     return res.status(500).json({ message: "Erro ao logar." });

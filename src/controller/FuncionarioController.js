@@ -40,13 +40,13 @@ export const criarFuncionario = async (req, res) => {
       return res.status(404).send("Preencha todos os campos.");
     }
 
-    const salt = await bcrypt.genSalt(12);
-    const hash = await bcrypt.hash(senha, salt);
+    // Hash agora é gerado automaticamente no model (beforeCreate)
+
 
     const funcionario = await Funcionario.create({
       nome,
       email,
-      senha: hash,
+      senha: senha, // Passa senha em texto simples, o hook cuidará do hash
     });
 
     return res.status(201).send("Funcionário criado com sucesso.");

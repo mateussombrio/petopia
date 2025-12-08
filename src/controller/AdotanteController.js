@@ -35,15 +35,15 @@ export const criarAdotante = async (req, res) => {
       return res.status(404).send("Preencha todos os campos.");
     }
 
-    const salt = await bcrypt.genSalt(12)
-    const hash = await bcrypt.hash(senha, salt)
+    // Hash agora é gerado automaticamente no model (beforeCreate)
+
 
     const adotante = await Adotante.create({
       nome,
       contato,
       email,
       endereco,
-      senha: hash,
+      senha: senha, // Passa senha em texto simples, o hook cuidará do hash
     });
 
     return res.status(201).send("Usuário criado com sucesso.");

@@ -43,6 +43,12 @@ const Adotante = database.define(
   },
   {
     hooks: {
+      beforeCreate: async (adotante) => {
+        if (adotante.senha) {
+          const hashSenha = await bcrypt.hash(adotante.senha, 12);
+          adotante.senha = hashSenha;
+        }
+      },
       beforeUpdate: async (adotante) => {
         if (adotante.changed("senha")) {
           const hashSenha = await bcrypt.hash(adotante.senha, 12);

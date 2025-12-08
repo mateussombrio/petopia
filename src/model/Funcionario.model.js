@@ -32,6 +32,12 @@ export const Funcionario = database.define(
   },
   {
     hooks: {
+      beforeCreate: async (funcionario) => {
+        if (funcionario.senha) {
+          const hashSenha = await bcrypt.hash(funcionario.senha, 10);
+          funcionario.senha = hashSenha;
+        }
+      },
       // HOOK CORRIGIDO: Agora usa a variável 'funcionario' corretamente
       beforeUpdate: async (funcionario) => {
         if (funcionario.changed("senha")) {
