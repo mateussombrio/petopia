@@ -17,8 +17,8 @@ router.get("/:id", mostrarAnimalID);
 
 router.use(authFunction);
 
-router.post("/", checkRole(["Administrador"]), cadastrarAnimal);
-router.put("/:id", checkRole(["Administrador"]), atualizarAnimal);
+router.post("/", cadastrarAnimal);
+router.put("/:id",  atualizarAnimal);
 router.delete("/:id", excluirAnimal);
 
 export default router;

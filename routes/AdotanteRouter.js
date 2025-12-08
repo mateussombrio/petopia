@@ -8,9 +8,9 @@ const router = Router()
 router.post("/", criarAdotante)
 
 // Rotas Privadas
-router.put("/",authFunction , atualizarAdotante)
-router.delete("/", authFunction ,excluirAdotante)
-router.get("/", authFunction , mostrarAdotantes)
-router.get("/:id", authFunction , mostrarAdotanteID)
+router.put("/", atualizarAdotante)
+router.delete("/", excluirAdotante)
+router.get("/", mostrarAdotantes)
+router.get("/:id",  mostrarAdotanteID)
 
 export default router
